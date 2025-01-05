@@ -7,16 +7,14 @@ import (
 	"net/http"
 )
 
-type area struct {
-  Name string `json:"name"`
-  Url string `json:"url"`
-}
-  
 type locationData struct {
   Count int `json:"count"`
   Next string `json:"next"`
   Previous string `json:"previous"`
-  Results []map[int]area `json:"results"`
+  Results []struct{
+    Name string `json:"name"`
+    Url string `json:"url"`
+  } `json:"results"`
 }
 
 func getLocation() ([]string, error) {
@@ -45,8 +43,8 @@ func getLocation() ([]string, error) {
 
   locationList := []string{}
 
-  for i, location := range locationData.Results {
-    locationList = append(locationList, location[i].Name)
+  for _, location := range locationData.Results {
+    locationList = append(locationList, location.Name)
   }
 
   return locationList , nil

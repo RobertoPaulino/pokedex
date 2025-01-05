@@ -59,7 +59,9 @@ func commandMap() error {
   if err != nil {
     return err
   }
-  println(locations)
+  for _, location := range locations {
+    fmt.Printf("%v\n", location)
+  } 
 
   return nil
 
