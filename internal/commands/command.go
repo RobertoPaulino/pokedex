@@ -1,10 +1,10 @@
-package main
+package commands 
 
 type cliCommand struct {
-  name        string
+  Name        string
   description string
-  callback    func(*config) error
-  config *config
+  Callback    func(*config) error
+  Config *config
 }
 
 type config struct {

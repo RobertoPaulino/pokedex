@@ -1,11 +1,11 @@
-package main
+package commands
 
 import (
   "fmt"
   "os"
 )
 
-func commandList() map[string]cliCommand {
+func CommandList() map[string]cliCommand {
 
   mapConfig := config{
     next: "",
@@ -15,26 +15,26 @@ func commandList() map[string]cliCommand {
   return map[string]cliCommand{
 
     "exit": {
-      name: "exit",
+      Name: "exit",
       description: "Exit the Pokedex",
-      callback: commandExit,
+      Callback: commandExit,
     },
     "help": {
-      name: "help",
+      Name: "help",
       description: "Displays a help message",
-      callback: commandHelp,
+      Callback: commandHelp,
     },
     "map": {
-      name: "map",
+      Name: "map",
       description: "Displays the name of 20 locations in the Pokemon world, subsequent calls display the next 20 locations",
-      callback: commandMap,
-      config: &mapConfig,
+      Callback: commandMap,
+      Config: &mapConfig,
     },
     "mapb": {
-      name: "map back",
+      Name: "map back",
       description: "Displays the name of the previous 20 locations in the pokemon world, if user is on the first page it will just let the user know they are on the first page",
-      callback: commandMapBack,
-      config: &mapConfig,
+      Callback: commandMapBack,
+      Config: &mapConfig,
     },
   } 
 }
@@ -50,14 +50,14 @@ func commandExit(config *config) error {
 func commandHelp(config *config) error {
   fmt.Print("Welcome to the Pokedex!\nUsage:\n\n")
 
-  commands := commandList()
+  commands := CommandList()
 
   if len(commands) == 0 {
     return fmt.Errorf("No Command found")
   }
 
   for _, command := range commands {
-    fmt.Printf("%v: %v\n", command.name, command.description)
+    fmt.Printf("%v: %v\n", command.Name, command.description)
   }
 
   return nil

@@ -1,9 +1,12 @@
 package main
 
 import (
-  "fmt"
-  "bufio"
-  "os"
+	"bufio"
+	"fmt"
+	"os"
+
+	"github.com/robertopaulino/pokedex/internal/commands"
+	"github.com/robertopaulino/pokedex/internal/utils"
 )
 
 func main() {
@@ -11,7 +14,7 @@ func main() {
   reader := bufio.NewReader(os.Stdin)
   scanner := bufio.NewScanner(reader)
 
-  commands := commandList()
+  commands := commands.CommandList()
   var text string
 
   for {
@@ -19,15 +22,15 @@ func main() {
     scanner.Scan()
     text = scanner.Text()
 
-    cleanText := cleanInput(text)
+    cleanText := utils.CleanInput(text)
 
     commandInfo, ok := commands[cleanText[0]] 
 
     if ok {
-      err := commandInfo.callback(commandInfo.config)
+      err := commandInfo.Callback(commandInfo.Config)
 
       if err != nil {
-        fmt.Printf("Error: %v \n input: %v \n running command %v\n", err, cleanText[0], commandInfo.name)
+        fmt.Printf("Error: %v \n input: %v \n running command %v\n", err, cleanText[0], commandInfo.Name)
       }
       continue
     }

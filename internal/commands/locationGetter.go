@@ -1,10 +1,11 @@
-package main
+package commands
 
 import (
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
+
 )
 
 type locationData struct {
