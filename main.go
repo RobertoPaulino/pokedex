@@ -24,7 +24,7 @@ func main() {
     commandInfo, ok := commands[cleanText[0]] 
 
     if ok {
-      err := commandInfo.callback()
+      err := commandInfo.callback(commandInfo.config)
 
       if err != nil {
         fmt.Printf("Error: %v \n input: %v \n running command %v\n", err, cleanText[0], commandInfo.name)

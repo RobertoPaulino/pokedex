@@ -17,8 +17,46 @@ type locationData struct {
   } `json:"results"`
 }
 
-func getLocation() ([]string, error) {
-  res, err := http.Get("https://pokeapi.co/api/v2/location-area/")
+func getNextUrl (c *config) (string, error){
+
+  //TODO: handle being on the last page by returning an error
+
+  if c.next == ""{
+    return "https://pokeapi.co/api/v1/location-area/", nil
+  } else {
+    return c.next, nil
+  }
+
+}
+
+func getPrevUrl (c *config) (string, error){
+
+  if c.previous == "" {
+    return "", fmt.Errorf("you're on the first page")
+  } else {
+    return c.previous, nil
+  }
+
+}
+
+func getLocation(c *config, next bool) ([]string, error) {
+
+  var url string
+
+  var err error
+
+  switch next {
+  case true:
+    url, err = getNextUrl(c)
+  case false:
+    url, err = getPrevUrl(c)
+  }
+  
+  if err != nil {
+    return []string{}, err
+  }
+
+  res, err := http.Get(url)
   if err != nil {
     return []string{}, fmt.Errorf("error requesting: %w", err)
   }
@@ -37,7 +75,6 @@ func getLocation() ([]string, error) {
   err = json.Unmarshal(body, &locationData)
 
   if err != nil {
-    fmt.Print("I ran!!!")
     return []string{}, err
   }
 
@@ -47,7 +84,9 @@ func getLocation() ([]string, error) {
     locationList = append(locationList, location.Name)
   }
 
+  c.next = locationData.Next
+  c.previous = locationData.Previous
+  
   return locationList , nil
-
   
 }
