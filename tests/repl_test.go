@@ -1,7 +1,8 @@
-package main
+package tests
 
 import (
   "testing"
+	"github.com/robertopaulino/pokedex/internal/utils"
 )
 
 func TestCleanInput(t *testing.T) {
@@ -37,7 +38,7 @@ func TestCleanInput(t *testing.T) {
   }
 
   for _, c := range cases {
-    actual := cleanInput(c.input)
+    actual := utils.CleanInput(c.input)
     
     if len(c.expected) != len(actual) {
       t.Errorf("wrong length")
