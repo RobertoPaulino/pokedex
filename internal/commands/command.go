@@ -6,9 +6,9 @@ import "github.com/robertopaulino/pokedex/internal/pokecache"
 type cliCommand struct {
 	Name        string
 	description string
-	Callback    func(*config) error
+	Callback    func(*config, *pokecache.Cache) error
 	Config      *config
-	cache *pokecache.Cache
+	Cache *pokecache.Cache
 }
 
 type config struct {

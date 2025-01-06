@@ -6,8 +6,8 @@ import (
 	"io"
 	"net/http"
 
-	"honnef.co/go/tools/lintcmd/cache"
-)
+	"github.com/robertopaulino/pokedex/internal/pokecache"
+) 
 
 type locationData struct {
   Count int `json:"count"`
@@ -41,12 +41,14 @@ func getPrevUrl (c *config) (string, error){
 
 }
 
-func getLocation(c *config, next bool) ([]string, error) {
+func getLocation(c *config, cache *pokecache.Cache, next bool) ([]string, error) {
 
   var url string
 
   var err error
-
+  
+  locationData := locationData{}
+  
   switch next {
   case true:
     url, err = getNextUrl(c)
@@ -58,8 +60,25 @@ func getLocation(c *config, next bool) ([]string, error) {
     return []string{}, err
   }
 
-  res, ok := cache
+  resCache, ok := cache.Get(url)
+  if ok {
+    err = json.Unmarshal(resCache, &locationData)
 
+    if err != nil {
+      return []string{}, err
+    }
+
+    locationList := []string{}
+
+    for _, location := range locationData.Results {
+      locationList = append(locationList, location.Name)
+    }
+
+    c.next = locationData.Next
+    c.previous = locationData.Previous
+  
+    return locationList , nil
+  }
 
 
   res, err := http.Get(url)
@@ -76,8 +95,7 @@ func getLocation(c *config, next bool) ([]string, error) {
   if err != nil {
     return []string{}, fmt.Errorf("Unknown error: %w", err)
   } 
-  
-  locationData := locationData{}
+
   err = json.Unmarshal(body, &locationData)
 
   if err != nil {
@@ -89,7 +107,8 @@ func getLocation(c *config, next bool) ([]string, error) {
   for _, location := range locationData.Results {
     locationList = append(locationList, location.Name)
   }
-
+  
+  cache.Add(url, body)
   c.next = locationData.Next
   c.previous = locationData.Previous
   

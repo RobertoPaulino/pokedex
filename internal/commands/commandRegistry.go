@@ -34,19 +34,19 @@ func CommandList() map[string]cliCommand {
       description: "Displays the name of 20 locations in the Pokemon world, subsequent calls display the next 20 locations",
       Callback: commandMap,
       Config: &mapConfig,
-      cache: mapCache,
+      Cache: mapCache,
     },
     "mapb": {
       Name: "map back",
       description: "Displays the name of the previous 20 locations in the pokemon world, if user is on the first page it will just let the user know they are on the first page",
       Callback: commandMapBack,
       Config: &mapConfig,
-      cache: mapCache,
+      Cache: mapCache,
     },
   } 
 }
 
-func commandExit(config *config) error {
+func commandExit(config *config, cache *pokecache.Cache) error {
   fmt.Println("Closing the Pokedex... Goodbye!")
 
   os.Exit(0)
@@ -54,7 +54,7 @@ func commandExit(config *config) error {
   return nil
 }
 
-func commandHelp(config *config) error {
+func commandHelp(config *config, cache *pokecache.Cache) error {
   fmt.Print("Welcome to the Pokedex!\nUsage:\n\n")
 
   commands := CommandList()
@@ -71,9 +71,9 @@ func commandHelp(config *config) error {
 }
 
 
-func commandMap(config *config) error {
+func commandMap(config *config, cache *pokecache.Cache) error {
   
-  locations, err := getLocation(config, true)
+  locations, err := getLocation(config, cache, true)
 
   if err != nil {
     return err
@@ -86,8 +86,8 @@ func commandMap(config *config) error {
 
 }
 
-func commandMapBack(config *config) error {
-  locations, err := getLocation(config, false)
+func commandMapBack(config *config, cache *pokecache.Cache) error {
+  locations, err := getLocation(config, cache, false)
 
   if err != nil {
     return err

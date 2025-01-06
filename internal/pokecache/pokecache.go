@@ -25,7 +25,7 @@ func NewCache(interval time.Duration) *Cache {
   return &cache
 }
 
-func (c *Cache) add(key string, val []byte) {
+func (c *Cache) Add(key string, val []byte) {
   c.mu.Lock()
   defer c.mu.Unlock()
   c.cache[key] = cacheEntry{
@@ -70,5 +70,4 @@ func clearCache(c *Cache, interval time.Duration){
       delete(c.cache, key)
     }
   }
-
 }

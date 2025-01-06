@@ -27,7 +27,7 @@ func main() {
     commandInfo, ok := commands[cleanText[0]] 
 
     if ok {
-      err := commandInfo.Callback(commandInfo.Config)
+      err := commandInfo.Callback(commandInfo.Config, commandInfo.Cache)
 
       if err != nil {
         fmt.Printf("Error: %v \n input: %v \n running command %v\n", err, cleanText[0], commandInfo.Name)
