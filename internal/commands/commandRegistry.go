@@ -1,8 +1,11 @@
 package commands
 
 import (
-  "fmt"
-  "os"
+	"fmt"
+	"os"
+	"time"
+
+	"github.com/robertopaulino/pokedex/internal/pokecache"
 )
 
 func CommandList() map[string]cliCommand {
@@ -11,6 +14,8 @@ func CommandList() map[string]cliCommand {
     next: "",
     previous: "",
   }
+  
+  mapCache := pokecache.NewCache(5 * time.Second)
 
   return map[string]cliCommand{
 
@@ -29,12 +34,14 @@ func CommandList() map[string]cliCommand {
       description: "Displays the name of 20 locations in the Pokemon world, subsequent calls display the next 20 locations",
       Callback: commandMap,
       Config: &mapConfig,
+      cache: mapCache,
     },
     "mapb": {
       Name: "map back",
       description: "Displays the name of the previous 20 locations in the pokemon world, if user is on the first page it will just let the user know they are on the first page",
       Callback: commandMapBack,
       Config: &mapConfig,
+      cache: mapCache,
     },
   } 
 }

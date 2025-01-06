@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 
+	"honnef.co/go/tools/lintcmd/cache"
 )
 
 type locationData struct {
@@ -56,6 +57,10 @@ func getLocation(c *config, next bool) ([]string, error) {
   if err != nil {
     return []string{}, err
   }
+
+  res, ok := cache
+
+
 
   res, err := http.Get(url)
   if err != nil {
