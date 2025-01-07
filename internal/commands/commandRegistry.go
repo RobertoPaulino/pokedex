@@ -16,6 +16,7 @@ func CommandList() map[string]cliCommand {
   }
   
   mapCache := pokecache.NewCache(5 * time.Second)
+  exploreCache := pokecache.NewCache(5 * time.Second)
 
   return map[string]cliCommand{
 
@@ -43,10 +44,42 @@ func CommandList() map[string]cliCommand {
       Config: &mapConfig,
       Cache: mapCache,
     },
+    "explore": {
+      Name: "explore",
+      description: "Displays pokemon found in the area, needs a ID or location name as a parameter.",
+      Callback: commandExplore,
+      Cache: exploreCache,
+      Parameter: []string{},
+    },
   } 
 }
 
-func commandExit(config *config, cache *pokecache.Cache) error {
+func commandExplore(config *config, cache *pokecache.Cache, parameters []string) error {
+  
+
+  if len(parameters) < 1 {
+    return fmt.Errorf("Not enough parameters")
+  } 
+
+  if len(parameters) > 1 {
+    return fmt.Errorf("Too many parameters")
+  }
+
+  pokemonList, err := getPokemonList(cache, parameters[0])
+
+
+  if err != nil {
+    return err
+  }
+  for _, pokemon := range pokemonList {
+    fmt.Printf("%v\n", pokemon)
+  } 
+
+  return nil
+
+}
+
+func commandExit(config *config, cache *pokecache.Cache, parameters []string) error {
   fmt.Println("Closing the Pokedex... Goodbye!")
 
   os.Exit(0)
@@ -54,7 +87,7 @@ func commandExit(config *config, cache *pokecache.Cache) error {
   return nil
 }
 
-func commandHelp(config *config, cache *pokecache.Cache) error {
+func commandHelp(config *config, cache *pokecache.Cache, parameters []string) error {
   fmt.Print("Welcome to the Pokedex!\nUsage:\n\n")
 
   commands := CommandList()
@@ -71,7 +104,7 @@ func commandHelp(config *config, cache *pokecache.Cache) error {
 }
 
 
-func commandMap(config *config, cache *pokecache.Cache) error {
+func commandMap(config *config, cache *pokecache.Cache, parameters []string) error {
   
   locations, err := getLocation(config, cache, true)
 
@@ -86,7 +119,7 @@ func commandMap(config *config, cache *pokecache.Cache) error {
 
 }
 
-func commandMapBack(config *config, cache *pokecache.Cache) error {
+func commandMapBack(config *config, cache *pokecache.Cache, parameters []string) error {
   locations, err := getLocation(config, cache, false)
 
   if err != nil {
