@@ -37,7 +37,7 @@ func main() {
     commandInfo.Parameter = parameterList
         
     if ok {
-      err := commandInfo.Callback(commandInfo.Config, commandInfo.Cache, commandInfo.Parameter)
+      err := commandInfo.Callback(commandInfo.Config, commandInfo.Cache, commandInfo.Parameter, commandInfo.Pokedex)
 
       if err != nil {
         fmt.Printf("Error: %v \n input: %v \n running command %v\n", err, cleanText[0], commandInfo.Name)

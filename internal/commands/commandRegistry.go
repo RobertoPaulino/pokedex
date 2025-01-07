@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/robertopaulino/pokedex/internal/pokecache"
+	"github.com/robertopaulino/pokedex/internal/pokedex"
 )
 
 func CommandList() map[string]cliCommand {
@@ -17,6 +18,8 @@ func CommandList() map[string]cliCommand {
   
   mapCache := pokecache.NewCache(5 * time.Second)
   exploreCache := pokecache.NewCache(5 * time.Second)
+
+  pokedex := pokedex.GetPokedex()
 
   return map[string]cliCommand{
 
@@ -51,11 +54,34 @@ func CommandList() map[string]cliCommand {
       Cache: exploreCache,
       Parameter: []string{},
     },
+    "catch": {
+      Name: "catch",
+      description: "Attempts to catch pokemon",
+      Callback: commandCatch,
+      Parameter: []string{},
+      Pokedex: pokedex,
+    },
   } 
 }
 
-func commandExplore(config *config, cache *pokecache.Cache, parameters []string) error {
+func commandCatch(config *config, cache *pokecache.Cache, parameters []string, pokedex *pokedex.Pokedex) error { 
   
+  if len(parameters) < 1 {
+    return fmt.Errorf("Not enough parameters")
+  } 
+
+  if len(parameters) > 1 {
+    return fmt.Errorf("Too many parameters")
+  }
+
+  catch(parameters[0], pokedex)
+  
+  return nil
+}
+
+func commandExplore(config *config, cache *pokecache.Cache, parameters []string, pokedex *pokedex.Pokedex) error {
+
+
 
   if len(parameters) < 1 {
     return fmt.Errorf("Not enough parameters")
@@ -65,21 +91,24 @@ func commandExplore(config *config, cache *pokecache.Cache, parameters []string)
     return fmt.Errorf("Too many parameters")
   }
 
+  fmt.Printf("Exploring %v...\nFound Pokemon:\n", parameters[0])
+
   pokemonList, err := getPokemonList(cache, parameters[0])
+  
 
 
   if err != nil {
     return err
   }
   for _, pokemon := range pokemonList {
-    fmt.Printf("%v\n", pokemon)
+    fmt.Printf(" - %v\n", pokemon)
   } 
 
   return nil
 
 }
 
-func commandExit(config *config, cache *pokecache.Cache, parameters []string) error {
+func commandExit(config *config, cache *pokecache.Cache, parameters []string, pokedex *pokedex.Pokedex) error {
   fmt.Println("Closing the Pokedex... Goodbye!")
 
   os.Exit(0)
@@ -87,7 +116,7 @@ func commandExit(config *config, cache *pokecache.Cache, parameters []string) er
   return nil
 }
 
-func commandHelp(config *config, cache *pokecache.Cache, parameters []string) error {
+func commandHelp(config *config, cache *pokecache.Cache, parameters []string, pokedex *pokedex.Pokedex) error {
   fmt.Print("Welcome to the Pokedex!\nUsage:\n\n")
 
   commands := CommandList()
@@ -104,7 +133,7 @@ func commandHelp(config *config, cache *pokecache.Cache, parameters []string) er
 }
 
 
-func commandMap(config *config, cache *pokecache.Cache, parameters []string) error {
+func commandMap(config *config, cache *pokecache.Cache, parameters []string, pokedex *pokedex.Pokedex) error {
   
   locations, err := getLocation(config, cache, true)
 
@@ -119,7 +148,7 @@ func commandMap(config *config, cache *pokecache.Cache, parameters []string) err
 
 }
 
-func commandMapBack(config *config, cache *pokecache.Cache, parameters []string) error {
+func commandMapBack(config *config, cache *pokecache.Cache, parameters []string, pokedex *pokedex.Pokedex) error {
   locations, err := getLocation(config, cache, false)
 
   if err != nil {
