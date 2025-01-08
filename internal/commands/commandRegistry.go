@@ -65,7 +65,6 @@ func CommandList() map[string]cliCommand {
 }
 
 func commandCatch(config *config, cache *pokecache.Cache, parameters []string, pokedex *pokedex.Pokedex) error { 
-  
   if len(parameters) < 1 {
     return fmt.Errorf("Not enough parameters")
   } 
@@ -74,7 +73,10 @@ func commandCatch(config *config, cache *pokecache.Cache, parameters []string, p
     return fmt.Errorf("Too many parameters")
   }
 
-  catch(parameters[0], pokedex)
+  err := catch(parameters[0], pokedex)
+  if err != nil {
+    return err
+  }
   
   return nil
 }
