@@ -79,25 +79,22 @@ func commandCatch(config *config, cache *pokecache.Cache, parameters []string, p
   }
   
   return nil
+
 }
 
 func commandExplore(config *config, cache *pokecache.Cache, parameters []string, pokedex *pokedex.Pokedex) error {
-
-
-
+  
   if len(parameters) < 1 {
     return fmt.Errorf("Not enough parameters")
   } 
-
+  
   if len(parameters) > 1 {
     return fmt.Errorf("Too many parameters")
   }
-
-  fmt.Printf("Exploring %v...\nFound Pokemon:\n", parameters[0])
-
-  pokemonList, err := getPokemonList(cache, parameters[0])
   
-
+  fmt.Printf("Exploring %v...\nFound Pokemon:\n", parameters[0])
+  
+  pokemonList, err := getPokemonList(cache, parameters[0])
 
   if err != nil {
     return err
