@@ -61,7 +61,42 @@ func CommandList() map[string]cliCommand {
       Parameter: []string{},
       Pokedex: pokedex,
     },
+    "inspect": {
+      Name: "inspect",
+      description: "Takes a look at a caught pokemon's information, will fail if the pokemon has not been caught",
+      Callback: commandInspect,
+      Parameter: []string{},
+      Pokedex: pokedex,
+    },
   } 
+}
+
+func commandInspect(config *config, cache *pokecache.Cache, parameters []string, pokedex *pokedex.Pokedex) error {
+
+  pokeData, err := pokedex.GetPokemon(parameters[0])
+  if err != nil {
+    return err
+  }
+  
+  fmt.Printf("Name: %v\n", pokeData.Name)
+  fmt.Printf("Height: %v\n", pokeData.Height)
+  fmt.Printf("Weight: %v\n", pokeData.Weight)
+  fmt.Printf("Stats: \n")
+  fmt.Printf(" -hp: %v\n", pokeData.Stats.Hp)
+  fmt.Printf(" -attack: %v\n", pokeData.Stats.Attack)
+  fmt.Printf(" -defense: %v\n", pokeData.Stats.Defense)
+  fmt.Printf(" -special-attack: %v\n", pokeData.Stats.SpecialAttack)
+  fmt.Printf(" -special-defense: %v\n", pokeData.Stats.SpecialDefense)
+  fmt.Printf(" -speed: %v\n", pokeData.Stats.Speed)
+  fmt.Printf("Types:\n")
+
+
+  for _, t := range pokeData.Types {
+    fmt.Printf(" - %v\n", t)    
+  }
+
+
+  return nil
 }
 
 func commandCatch(config *config, cache *pokecache.Cache, parameters []string, pokedex *pokedex.Pokedex) error { 

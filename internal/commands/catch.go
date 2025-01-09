@@ -63,6 +63,8 @@ func catch(name string, dex *pokedex.Pokedex) error {
   
   pokemonStats := getStats(pokemonData)
   pokemonTypes := getTypes(pokemonData)
+
+  fmt.Printf("Throwing a Pokeball at %v...", pokemonData.Name)
   if isCaught {
     newPokemon := pokemon.Pokemon{
       Name: pokemonData.Name,
@@ -127,10 +129,10 @@ func getStats(pokemonData PokemonData) pokemon.PokemonStats{
 func getTypes(pokemonData PokemonData) []string{
   
   types := []string{}
-
-  for i := 0; i < len(pokemonData.Types) - 1; i++ {
-    types[i] = pokemonData.Types[i].Type.Name
-  } 
+  
+  for _, t := range pokemonData.Types {
+    types = append(types, t.Type.Name)
+  }
 
   return types
 }
